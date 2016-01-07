@@ -18,4 +18,8 @@ type UsedColors = [ColorInGame]
 
 -----------------------------------------------------------
 
+-- Функция, которая берет первые несколько элементов списка
+getNElemFromList :: Int -> UsedColors -> UsedColors
+getNElemFromList n list = take n list
 
+------------------------------------------------------------
