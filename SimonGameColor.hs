@@ -22,4 +22,9 @@ type UsedColors = [ColorInGame]
 getNElemFromList :: Int -> UsedColors -> UsedColors
 getNElemFromList n list = take n list
 
+-- Функция, которая достает из списка элемент по требуемому индексу
+getElemFromListWithId :: [a] -> Int -> a
+getElemFromListWithId list 0 = head list
+getElemFromListWithId list n = getElemFromListWithId (tail list) (n-1)
+
 ------------------------------------------------------------
