@@ -46,3 +46,9 @@ getColorOnNumber n
 | otherwise = Blue
 
 ------------------------------------------------------------
+
+-- Функция, генерирующая уровень, в которой n - номер уровня и количество зажигающихся цветов на этом уровне
+generateGameLevel :: Int -> IO UsedColors
+generateGameLevel n = forM [1..n] $ (\a -> do
+						x <- randomColor
+						return x)
