@@ -149,5 +149,18 @@ showColorsListWithDelay buttons pairs f generatedList label = do
     set label [ text := ""]
     return () 
 
------------------------------------------------------------------------------------
+------------------------------------------------------------------
+
+
+-- Проверка правильности нажатых кнопок и переход на следующий уровень
+actionGUI :: [Button ()] -> [(Button(), ColorInGame)] -> Window a -> IORef Int -> TextCtrl () -> IORef UsedColors -> IO()
+actionGUI buttons pairs f ref txtTitle constUsedColors = do
+    st <- readIORef ref
+    state <- generateGameLevel st
+    writeIORef constUsedColors state
+    showColorsListWithDelay buttons pairs f constUsedColors txtTitle
+    writeIORef ref (st+1)
+    return ()
+
+-----------------------------------------------------------------
 
