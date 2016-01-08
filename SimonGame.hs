@@ -122,17 +122,18 @@ endOfGame w = infoDialog w "Конец игры!" "Неправильная по
 -- Функция, которая выводит в метку один элемент сгенерированной последовательности
 showOneColor :: IORef Bool -> Window a -> [Button ()] -> [(Button(), ColorInGame)] -> IORef UsedColors -> TextCtrl ()-> IO()
 showOneColor refFlag f buttons pairs colors label = do
-currUsedColors <- readIORef colors
+currUsedColors <- readIORef colors -- сгенерированные цвета
 if (currUsedColors == []) then (do enableButs buttons; return()) else showOneColor_ refFlag f buttons pairs colors label
 
 showOneColor_ :: IORef Bool -> Window a -> [Button ()] -> [(Button(), ColorInGame)] -> IORef UsedColors -> TextCtrl ()-> IO()
 showOneColor_ refFlag f buttons pairs colors label = do
-currUsedColors <- readIORef colors
-fl <- readIORef refFlag
-let c = head currUsedColors
-let str = colorToString c
-let ourButton = findButtonOnColor c pairs
-if fl == True then setColor refFlag ourButton c label else offColor refFlag ourButton label
+currUsedColors <- readIORef colors -- сгенерированные цвета
+fl <- readIORef refFlag -- переменная-флаг
+let c = head currUsedColors -- берется первый цвет
+let str = colorToString c -- преобразуется к строке
+let ourButton = findButtonOnColor c pairs -- находится соответствующая кнопка
+-- В зависимости от значения переменной-флага мы либо устанавливаем цвет кнопки на игровой панели, либо обесцвечиваем ее
+if (fl == True) then setColor refFlag ourButton c label else offColor refFlag ourButton label
 if (currUsedColors == []) then return() else (if fl == False then (writeIORef colors (tail currUsedColors)) else (writeIORef colors currUsedColors))
 
 -----------------------------------------------------------------
