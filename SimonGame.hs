@@ -144,8 +144,8 @@ showColorsListWithDelay buttons pairs f generatedList label = do
     -- копируем generated list
     stateGenList <- readIORef generatedList
     generatedListCopy <- newIORef (stateGenList)
-    flag <- newIORef True
-    t <- timer f [interval := 1000, on command := showOneColor flag f buttons pairs generatedListCopy label]
+    flag <- newIORef True -- переменная-флаг
+    t <- timer f [interval := 1000, on command := showOneColor flag f buttons pairs generatedListCopy label] -- таймер, реагирующий на команду, которая показывает цветную кнопку-метку
     set label [ text := ""]
     return () 
 
