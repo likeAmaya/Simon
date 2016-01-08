@@ -90,4 +90,16 @@ parseStr str = parseList $ words str
 
 -------------------------------------------------------------
 
+parseList :: [String] -> [ColorInGame]
+parseList xs = map (\x -> prs x) xs
+	where 	
+		prs :: String -> ColorInGame
+		prs x 
+			| (x=="Red") = Red
+			| (x=="Blue") = Blue
+			| (x=="Yellow") = Yellow
+			| otherwise = Green 
+
+--------------------------------------------------------------
+
 
