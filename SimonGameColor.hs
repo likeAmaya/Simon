@@ -76,3 +76,10 @@ stringLevel :: UsedColors -> String
 stringLevel st = foldl(\acc x -> acc ++ " " ++ show x) "" st 
 
 -------------------------------------------------------------
+
+-- Преобразование  цвета к строке 
+
+colorToString :: ColorInGame -> String
+colorToString color = show color
+
+-------------------------------------------------------------
