@@ -37,7 +37,7 @@ randomColor :: IO ColorInGame
 randomColor = do
   number <- randomRIO (1,4) :: IO Int -- выбор из 4 доступных цветов
   let color = getColorOnNumber number -- получение цвета по его номере, используется функция ниже
-return color -- в результате получаем цвет
+  return color -- в результате получаем цвет
 
 ------------------------------------------------------------
 
@@ -72,6 +72,21 @@ win st1 st2
 	| otherwise = print "You lost"
 
 -------------------------------------------------------------
+-------------------------------------------------------------
+
+-- Парсеры
+parseStr :: String -> [ColorInGame]
+parseStr str = parseList $ words str 
+
+parseList :: [String] -> [ColorInGame]
+parseList xs = map (\x -> prs x) xs
+	where 	
+		prs :: String -> ColorInGame
+		prs x 
+			| (x=="Red") = Red
+			| (x=="Blue") = Blue
+			| (x=="Yellow") = Yellow
+			| otherwise = Green 
 
 -- Преобразование списка цветов UsedColors к строке 
 

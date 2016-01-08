@@ -7,6 +7,7 @@ import SimonGameColor
 import System.IO
 import Control.Monad
 import Data.List
+import Data.IORef
 import Control.Concurrent (threadDelay)
 
 -----------------------------------------------------------
@@ -78,7 +79,7 @@ disableButs buttons = do -- номера кнопок от 0 до 3
   set (getElemFromListWithId buttons 1) [enabled := False] 
   set (getElemFromListWithId buttons 2) [enabled := False] 
   set (getElemFromListWithId buttons 3) [enabled := False] 
-return() 
+  return() 
 
 -----------------------------------------------------------
 
@@ -89,7 +90,7 @@ enableButs buttons = do -- номера кнопок от 0 до 3
   set (getElemFromListWithId buttons 1) [enabled := True] 
   set (getElemFromListWithId buttons 2) [enabled := True] 
   set (getElemFromListWithId buttons 3) [enabled := True] 
-return()
+  return()
 
 -----------------------------------------------------------
 
@@ -123,19 +124,19 @@ endOfGame w = infoDialog w "Game end" "Wrong colors sequence"
 -- Функция, которая выводит в метку один элемент сгенерированной последовательности
 showOneColor :: IORef Bool -> Window a -> [Button ()] -> [(Button(), ColorInGame)] -> IORef UsedColors -> TextCtrl ()-> IO()
 showOneColor refFlag f buttons pairs colors label = do
-currUsedColors <- readIORef colors -- сгенерированные цвета
-if (currUsedColors == []) then (do enableButs buttons; return()) else showOneColor_ refFlag f buttons pairs colors label
+	currUsedColors <- readIORef colors -- сгенерированные цвета
+	if (currUsedColors == []) then (do enableButs buttons; return()) else showOneColor_ refFlag f buttons pairs colors label
 
 showOneColor_ :: IORef Bool -> Window a -> [Button ()] -> [(Button(), ColorInGame)] -> IORef UsedColors -> TextCtrl ()-> IO()
 showOneColor_ refFlag f buttons pairs colors label = do
-currUsedColors <- readIORef colors -- сгенерированные цвета
-fl <- readIORef refFlag -- переменная-флаг
-let c = head currUsedColors -- берется первый цвет
-let str = colorToString c -- преобразуется к строке
-let ourButton = findButtonOnColor c pairs -- находится соответствующая кнопка
--- В зависимости от значения переменной-флага мы либо устанавливаем цвет кнопки на игровой панели, либо обесцвечиваем ее
-if (fl == True) then setColor refFlag ourButton c label else offColor refFlag ourButton label
-if (currUsedColors == []) then return() else (if fl == False then (writeIORef colors (tail currUsedColors)) else (writeIORef colors currUsedColors))
+	currUsedColors <- readIORef colors -- сгенерированные цвета
+	fl <- readIORef refFlag -- переменная-флаг
+	let c = head currUsedColors -- берется первый цвет
+	let str = colorToString c -- преобразуется к строке
+	let ourButton = findButtonOnColor c pairs -- находится соответствующая кнопка
+	-- В зависимости от значения переменной-флага мы либо устанавливаем цвет кнопки на игровой панели, либо обесцвечиваем ее
+	if (fl == True) then setColor refFlag ourButton c label else offColor refFlag ourButton label
+	if (currUsedColors == []) then return() else (if fl == False then (writeIORef colors (tail currUsedColors)) else (writeIORef colors currUsedColors))
 
 -----------------------------------------------------------------
 
@@ -200,30 +201,29 @@ actionUserButtons buttons pairs textField n w refUser st1 butColor levelInfo = d
 
 -- Запуск всей игры
 main :: IO ()
-main = start $ gui
+main = start $ startGame
 
 -- Здесь собирается весь наш интерфейс
-gui :: IO ()
-gui =  do
+startGame :: IO ()
+startGame =  do
   -- Наша форма
-  f <- frame [ text := "Simon"]
+  f <- frame [ text := "Simon"]--, picture := "/home/oleg/Simon/fon.jpeg"]
   let n = 1 -- начинаем с этого уровня
   state <- generateGameLevel n -- генерируется список цветов, в зависимости от номера уровня
   let level = stringLevel state
   ref <- newIORef (n+1)
 
    -- Это список, в который записивается сгенерированная программой последовательность для определенного игрового уровня
-  refState <- newIORef state
+  gameState <- newIORef state
 
   -- Это список, который накапливает значения на определенном уровне по нажатию цветных кнопок пользователя
   let userList = []
-  refUserList <- newIORef userList
+  gameUserList <- newIORef userList
  
   -- 
   txtTitle <- entry f [text := level , enabled := False ]
-  congr <- entry f [text := "Уровень начат!" , enabled := False ]
-      
-    -- tsakButton, мигающие кнопочки
+  congr <- entry f [text := "Уровень начат!" , enabled := False ] 
+
   taskb1 <- button f [ text := " ", bgcolor  := white, clientSize := sz 200 200, enabled := False  ]
   taskb2 <- button f [ text := " " , bgcolor  := white, clientSize := sz 200 200, enabled := False ]
   taskb3 <- button f [ text := " " , bgcolor  := white, clientSize := sz 200 200, enabled := False ]
@@ -231,7 +231,7 @@ gui =  do
   
   let listOfPairTaskButtons = (taskb1, Green ):(taskb2, Red):(taskb3, Yellow):(taskb4, Blue):[]
   
-  p <- panel f [clientSize := sz 420 100] 
+  p <- panel f [clientSize := sz 420 200] 
   
   -- gameButton, кнопочки на которые непосредственно нажимает игрок
   b1 <- button f [ text := " ", bgcolor  := green, clientSize := sz 200 200 ]
@@ -242,22 +242,22 @@ gui =  do
   -- список, куда мы помещаем кнопки
   let listUserButtons = b1:b2:b3:b4:[]
   
-  -- Кнопки с помощью, выходом и восхвалением 
+  -- Кнопки с помощью, выходом и информацией об игре 
   q <- button f [ text := "Выход из игры" , on command := close f ]
   h <- button f [ text := "Правила игры" , on command := playerHelp f ]
   a <- button f [ text := "Об игре", on command := aboutGame f ]
 
-  set b1 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f refUserList refState Green  congr ]
-  set b2 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f refUserList refState Red congr]
-  set b3 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f refUserList refState Yellow congr ]
-  set b4 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f refUserList refState Blue  congr ]
+  set b1 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f gameUserList gameState Green  congr ]
+  set b2 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f gameUserList gameState Red congr]
+  set b3 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f gameUserList gameState Yellow congr ]
+  set b4 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f gameUserList gameState Blue  congr ]
  
   set f [ layout := column 0 [
         -- Тестовое окно с текущим цветом игры
         margin 1 $ row 1 [ hfill $ minsize (sz 200 25) $ widget txtTitle],
     
     	-- Переход уровня
-        margin 1 $ row 1 [ hfill $ minsize (sz 150 25) $  widget congr],
+        margin 1 $ row 1 [ hfill $ minsize (sz 200 25) $  widget congr],
     
         -- Кнопки с заданием
       	-- Первый ряд
