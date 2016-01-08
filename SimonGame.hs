@@ -81,6 +81,17 @@ return()
 
 -----------------------------------------------------------
 
+-- Функция разблокировки кнопок (делает кнопки доступными для пользователя) 
+enableButs :: [Button ()] -> IO () 
+enableButs buttons = do -- номера кнопок от 0 до 3
+  set (getElemFromListWithId buttons 0) [enabled := True] 
+  set (getElemFromListWithId buttons 1) [enabled := True] 
+  set (getElemFromListWithId buttons 2) [enabled := True] 
+  set (getElemFromListWithId buttons 3) [enabled := True] 
+return()
+
+-----------------------------------------------------------
+
 -- В случае проигрыша пользователя
 gameOver :: Window a -> IORef UsedColors -> IORef Int -> IORef UsedColors -> TextCtrl () -> TextCtrl() -> IO()
 
