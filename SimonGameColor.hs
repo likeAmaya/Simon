@@ -28,3 +28,12 @@ getElemFromListWithId list 0 = head list
 getElemFromListWithId list n = getElemFromListWithId (tail list) (n-1)
 
 ------------------------------------------------------------
+
+-- Выбор цвета случайным образом
+randomColor :: IO ColorInGame
+randomColor = do
+number <- randomRIO (1,4) :: IO Int -- выбор из 4 доступных цветов
+let color = getColorOnNumber number — получение цвета по его номере, используется функция ниже
+return color -- в результате получаем цвет
+
+------------------------------------------------------------
