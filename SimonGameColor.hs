@@ -69,3 +69,10 @@ win st1 st2
 	| otherwise = print "You lost"
 
 -------------------------------------------------------------
+
+-- Преобразование  списка цветов UsedColors к строке 
+
+stringLevel :: UsedColors -> String
+stringLevel st = foldl(\acc x -> acc ++ " " ++ show x) "" st 
+
+-------------------------------------------------------------
