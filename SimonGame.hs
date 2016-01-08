@@ -69,3 +69,25 @@ offColor refFlag but label = do
   writeIORef refFlag True
 
 -----------------------------------------------------------
+-- В случае проигрыша пользователя
+gameOver :: Window a -> IORef UsedColors -> IORef Int -> IORef UsedColors -> TextCtrl () -> TextCtrl() -> IO()
+--
+-- userList - пользовательская последовательность
+-- levelList - список уровней
+-- label - метка с номером уровня
+-- levelInfo - информационная переменная
+--
+gameOver f userList n levelList label levelInfo = do
+	endOfGame f 		-- выводим сообщение о проигрыше
+	let tempList = [] 	-- обнуляем пользовательскую последовательность
+	writeIORef userList tempList
+	writeIORef n 1 		-- генерируем заново 1-ый уровень
+	level <- generateGameLevel 1
+	writeIORef levelList level
+	set label [ text := stringLevel level]
+	set levelInfo [ text := "Уровень начат! "]
+	return()
+
+-- Конец игры
+endOfGame :: Window a -> IO ()
+endOfGame w = infoDialog w "Конец игры!" "Неправильная последовательность цветов!"
