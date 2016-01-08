@@ -52,3 +52,10 @@ generateGameLevel :: Int -> IO UsedColors
 generateGameLevel n = forM [1..n] $ (\a -> do
 						x <- randomColor
 						return x)
+
+
+-- Функция, проверяющая правильность нажатых пользователем цветов: на вход подается пользовательское состояние и правильное состояние
+compareUsedColors :: UsedColors -> UsedColors -> Bool
+compareUsedColors userUsedColors trueUsedColors = (userUsedColors == trueUsedColors)
+
+-------------------------------------------------------------
