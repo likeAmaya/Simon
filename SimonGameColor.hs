@@ -70,14 +70,14 @@ win st1 st2
 
 -------------------------------------------------------------
 
--- Преобразование  списка цветов UsedColors к строке 
+-- Преобразование списка цветов UsedColors к строке 
 
 stringLevel :: UsedColors -> String
 stringLevel st = foldl(\acc x -> acc ++ " " ++ show x) "" st 
 
 -------------------------------------------------------------
 
--- Преобразование  цвета к строке 
+-- Преобразование цвета к строке 
 
 colorToString :: ColorInGame -> String
 colorToString color = show color
