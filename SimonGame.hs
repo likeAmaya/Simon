@@ -36,3 +36,23 @@ findButtonOnColor :: ColorInGame -> [(Button(), ColorInGame)] -> Button()
 findButtonOnColor color list = head $ foldl (\acc x -> if (snd x == color) then fst x : acc else acc) [] list 
 
 -----------------------------------------------------------
+
+-- Функция покраски кнопки в заданный цвет
+setColor :: IORef Bool -> Button() -> ColorInGame -> TextCtrl () -> IO() 
+setColor refFlag but color label
+  | color == Green = do 
+       set but [bgcolor := green] 
+       set label [ text := "Green" ] 
+       writeIORef refFlag False
+  | color == Red = do 
+       set but [bgcolor := red] 
+       set label [ text := "Red" ] 
+       writeIORef refFlag False 
+  | color == Yellow = do 
+       set but [bgcolor := yellow ] 
+       set label [ text := "Yellow" ] 
+       writeIORef refFlag False 
+  | otherwise = do 
+       set but [bgcolor := blue] 
+       set label [ text := "Blue" ] 
+       writeIORef refFlag False 
