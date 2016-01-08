@@ -33,30 +33,30 @@ playerHelp w
 
 -- Функция для нахождения кнопки по цвету 
 findButtonOnColor :: ColorInGame -> [(Button(), ColorInGame)] -> Button() 
-findButtonOnColor color list = head $ foldl (\acc x -> if (snd x == color) then fst x : acc else acc) [] list 
+findButtonOnColor color list = head $ foldl (\acc x -> if (snd x == color) then fst x : acc else acc) [] list -- ищем цвет в списке пар
 
 -----------------------------------------------------------
 
 -- Функция покраски кнопки в заданный цвет
 setColor :: IORef Bool -> Button() -> ColorInGame -> TextCtrl () -> IO() 
 setColor refFlag but color label
-  | color == Green = do 
+  | color == Green = do -- если зеленый
        set but [bgcolor := green] 
        set label [ text := "Green" ] 
        writeIORef refFlag False
-  | color == Red = do 
+  | color == Red = do -- если красный
        set but [bgcolor := red] 
        set label [ text := "Red" ] 
        writeIORef refFlag False 
-  | color == Yellow = do 
+  | color == Yellow = do -- если желтый
        set but [bgcolor := yellow ] 
        set label [ text := "Yellow" ] 
        writeIORef refFlag False 
-  | color == Blue = do 
+  | color == Blue = do -- если зеленый
        set but [bgcolor := blue] 
        set label [ text := "Blue" ] 
        writeIORef refFlag False 
-  | otherwise = do  -- если нет такого
+  | otherwise = do  -- если нет такого цвета
        set but [bgcolor := black] 
 	   
 -----------------------------------------------------------
@@ -105,17 +105,17 @@ gameOver f userList n levelList label levelInfo = do
 	let tempList = [] 	-- обнуляем пользовательскую последовательность
 	writeIORef userList tempList
 	writeIORef n 1 		-- генерируем заново 1-ый уровень
-	level <- generateGameLevel 1
+	level <- generateGameLevel 1 
 	writeIORef levelList level
 	set label [ text := stringLevel level]
-	set levelInfo [ text := "Уровень начат! "]
+	set levelInfo [ text := "New level begun"]
 	return()
 
 -----------------------------------------------------------
 
 -- Конец игры
 endOfGame :: Window a -> IO ()
-endOfGame w = infoDialog w "Конец игры!" "Неправильная последовательность цветов!"
+endOfGame w = infoDialog w "Game end" "Wrong colors sequence" 
 
 -----------------------------------------------------------
 
@@ -158,7 +158,7 @@ actionGUI buttons pairs f ref txtTitle constUsedColors = do
     st <- readIORef ref -- номер уровня
     state <- generateGameLevel st -- генерирование цветовой последовательности согласно уровню
     writeIORef constUsedColors state
-    showColorsListWithDelay buttons pairs f constUsedColors txtTitle -- Генерация игрой цветовой последовательности, то есть игрок видит сменяющиеся цвета
+    showColorsListWithDelay buttons pairs f constUsedColors txtTitle -- генерация игрой цветовой последовательности, то есть игрок видит сменяющиеся цвета
     writeIORef ref (st+1)
     return ()
 
@@ -168,7 +168,7 @@ actionGUI buttons pairs f ref txtTitle constUsedColors = do
 nullUsersList :: [Button()] -> [(Button(), ColorInGame)] -> Window a -> IORef UsedColors -> IORef Int -> TextCtrl () -> IORef UsedColors -> TextCtrl() -> IO()
 nullUsersList buttons pairs f userList n textField st1 levelInfo = do
 	nn <- readIORef n
-	set levelInfo [ text := "Вы прошли уровень " ++ show (nn-1) ++ "!"] -- генерация сообщения о прохождении уровня
+	set levelInfo [ text := "You win in level " ++ show (nn-1) ++ "!"] -- генерация сообщения о прохождении уровня
 	let tempList = [] -- для нового уровня
 	writeIORef userList tempList
 	actionGUI buttons pairs f n textField st1 -- запуск с новыми данными

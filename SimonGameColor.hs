@@ -24,7 +24,7 @@ getNElemFromList n list = take n list
 
 -- Функция, которая достает из списка элемент по требуемому индексу
 getElemFromListWithId :: [a] -> Int -> a
-getElemFromListWithId list 0 = head list
+getElemFromListWithId list 0 = head list -- 0 элемент
 getElemFromListWithId list n = getElemFromListWithId (tail list) (n-1)
 
 ------------------------------------------------------------
@@ -33,7 +33,7 @@ getElemFromListWithId list n = getElemFromListWithId (tail list) (n-1)
 randomColor :: IO ColorInGame
 randomColor = do
   number <- randomRIO (1,4) :: IO Int -- выбор из 4 доступных цветов
-  let color = getColorOnNumber number — получение цвета по его номере, используется функция ниже
+  let color = getColorOnNumber number -- получение цвета по его номере, используется функция ниже
 return color -- в результате получаем цвет
 
 ------------------------------------------------------------
@@ -41,24 +41,24 @@ return color -- в результате получаем цвет
 -- Получение цвета по его номеру
 getColorOnNumber :: Int -> ColorInGame
 getColorOnNumber n
-  | (n==1) = Green 
-  | (n==2) = Red
-  | (n==3) = Yellow
-  | otherwise = Blue
+  | (n==1) = Green -- зеленый
+  | (n==2) = Red -- красный
+  | (n==3) = Yellow -- желтый
+  | otherwise = Blue -- синий
 
 ------------------------------------------------------------
 
 -- Функция, генерирующая уровень, в которой n - номер уровня и количество зажигающихся цветов на этом уровне
 generateGameLevel :: Int -> IO UsedColors
 generateGameLevel n = forM [1..n] $ (\a -> do
-						x <- randomColor
+						x <- randomColor -- случайный цвет
 						return x)
 
 -------------------------------------------------------------
 
 -- Функция, проверяющая правильность нажатых пользователем цветов: на вход подается пользовательское состояние и правильное состояние
 compareUsedColors :: UsedColors -> UsedColors -> Bool
-compareUsedColors userUsedColors trueUsedColors = (userUsedColors == trueUsedColors)
+compareUsedColors userUsedColors trueUsedColors = (userUsedColors == trueUsedColors) -- сравниваем
 
 -------------------------------------------------------------
 
