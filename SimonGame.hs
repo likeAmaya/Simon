@@ -155,10 +155,10 @@ showColorsListWithDelay buttons pairs f generatedList label = do
 -- Проверка правильности нажатых кнопок и переход на следующий уровень
 actionGUI :: [Button ()] -> [(Button(), ColorInGame)] -> Window a -> IORef Int -> TextCtrl () -> IORef UsedColors -> IO()
 actionGUI buttons pairs f ref txtTitle constUsedColors = do
-    st <- readIORef ref
-    state <- generateGameLevel st
+    st <- readIORef ref -- номер уровня
+    state <- generateGameLevel st -- генерирование цветовой последовательности согласно уровню
     writeIORef constUsedColors state
-    showColorsListWithDelay buttons pairs f constUsedColors txtTitle
+    showColorsListWithDelay buttons pairs f constUsedColors txtTitle -- Генерация игрой цветовой последовательности, то есть игрок видит сменяющиеся цвета
     writeIORef ref (st+1)
     return ()
 
