@@ -52,7 +52,9 @@ setColor refFlag but color label
        set but [bgcolor := yellow ] 
        set label [ text := "Yellow" ] 
        writeIORef refFlag False 
-  | otherwise = do 
+  | color == Blue = do 
        set but [bgcolor := blue] 
        set label [ text := "Blue" ] 
        writeIORef refFlag False 
+  | otherwise = do  -- если нет такого
+       set but [bgcolor := black] 
