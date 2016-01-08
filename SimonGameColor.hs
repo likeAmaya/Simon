@@ -59,3 +59,11 @@ compareUsedColors :: UsedColors -> UsedColors -> Bool
 compareUsedColors userUsedColors trueUsedColors = (userUsedColors == trueUsedColors)
 
 -------------------------------------------------------------
+
+-- Определение победы на уровне
+win :: UsedColors -> UsedColors -> IO()
+win st1 st2
+	| compareUsedColors st1 st2 = print "Вы прошли уровень!"
+	| otherwise = print "Вы проиграли!"
+
+-------------------------------------------------------------
