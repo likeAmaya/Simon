@@ -32,18 +32,19 @@ getElemFromListWithId list n = getElemFromListWithId (tail list) (n-1)
 -- Выбор цвета случайным образом
 randomColor :: IO ColorInGame
 randomColor = do
-number <- randomRIO (1,4) :: IO Int -- выбор из 4 доступных цветов
-let color = getColorOnNumber number — получение цвета по его номере, используется функция ниже
+  number <- randomRIO (1,4) :: IO Int -- выбор из 4 доступных цветов
+  let color = getColorOnNumber number — получение цвета по его номере, используется функция ниже
 return color -- в результате получаем цвет
 
 ------------------------------------------------------------
+
 -- Получение цвета по его номеру
 getColorOnNumber :: Int -> ColorInGame
 getColorOnNumber n
-| (n==1) = Green 
-| (n==2) = Red
-| (n==3) = Yellow
-| otherwise = Blue
+  | (n==1) = Green 
+  | (n==2) = Red
+  | (n==3) = Yellow
+  | otherwise = Blue
 
 ------------------------------------------------------------
 
@@ -53,6 +54,7 @@ generateGameLevel n = forM [1..n] $ (\a -> do
 						x <- randomColor
 						return x)
 
+-------------------------------------------------------------
 
 -- Функция, проверяющая правильность нажатых пользователем цветов: на вход подается пользовательское состояние и правильное состояние
 compareUsedColors :: UsedColors -> UsedColors -> Bool
@@ -63,7 +65,7 @@ compareUsedColors userUsedColors trueUsedColors = (userUsedColors == trueUsedCol
 -- Определение победы на уровне
 win :: UsedColors -> UsedColors -> IO()
 win st1 st2
-	| compareUsedColors st1 st2 = print "Вы прошли уровень!"
-	| otherwise = print "Вы проиграли!"
+	| compareUsedColors st1 st2 = print "Congratulation! Level up"
+	| otherwise = print "You lost"
 
 -------------------------------------------------------------
