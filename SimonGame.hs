@@ -173,3 +173,26 @@ nullUsersList buttons pairs f userList n textField st1 levelInfo = do
 	writeIORef userList tempList
 	actionGUI buttons pairs f n textField st1 -- запуск с новыми данными
 	return()
+
+-----------------------------------------------------------------
+
+-- Функция, вызываемая по нажатию на кнопки 
+actionUserButtons :: [Button ()] -> [(Button(), ColorInGame)] -> TextCtrl () -> IORef Int -> Window a -> IORef UsedColors -> IORef UsedColors -> ColorInGame -> TextCtrl () -> IO() 
+actionUserButtons buttons pairs textField n w refUser st1 butColor levelInfo = do 
+  st <- readIORef refUser 
+  constUsedColors <- readIORef st1 
+  let modifiedUserList = st ++ [butColor] 
+  writeIORef refUser modifiedUserList 
+  let partOfGenList = getNElemFromList (length modifiedUserList) constUsedColors 
+  -- Сравнивает текущий подсписок с соответствующим по длине подскиском программы лексико-графически 
+  let equal = compareUsedColors modifiedUserList partOfGenList 
+  -- Если подпоследовательность не равна соответствующей подпоследовательности списка программы, то
+  -- была допущена ошибка, программа завершается 
+  if (equal == False) then (gameOver w refUser n st1 textField levelInfo) else 
+    if (length modifiedUserList == length constUsedColors) then (do 
+      disableButs buttons; -- дезактивация кнопок
+      nullUsersList buttons pairs w refUser n textField st1 levelInfo ; -- обнуление
+      return()) 
+    else return()
+
+-----------------------------------------------------------------
