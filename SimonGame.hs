@@ -164,3 +164,12 @@ actionGUI buttons pairs f ref txtTitle constUsedColors = do
 
 -----------------------------------------------------------------
 
+-- Обнуляет пользовательский список перед генерацией нового игрового уровня и запускает новый уровень
+nullUsersList :: [Button()] -> [(Button(), ColorInGame)] -> Window a -> IORef UsedColors -> IORef Int -> TextCtrl () -> IORef UsedColors -> TextCtrl() -> IO()
+nullUsersList buttons pairs f userList n textField st1 levelInfo = do
+	nn <- readIORef n
+	set levelInfo [ text := "Вы прошли уровень " ++ show (nn-1) ++ "!"]
+	let tempList = []
+	writeIORef userList tempList
+	actionGUI buttons pairs f n textField st1
+	return()
