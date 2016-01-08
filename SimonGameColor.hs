@@ -83,3 +83,11 @@ colorToString :: ColorInGame -> String
 colorToString color = show color
 
 -------------------------------------------------------------
+
+-- Парсеры
+parseStr :: String -> [ColorInGame]
+parseStr str = parseList $ words str 
+
+-------------------------------------------------------------
+
+
