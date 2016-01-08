@@ -58,3 +58,14 @@ setColor refFlag but color label
        writeIORef refFlag False 
   | otherwise = do  -- если нет такого
        set but [bgcolor := black] 
+	   
+-----------------------------------------------------------
+
+-- Функция возвращения кнопке исходного цвета (обесцвечивание кнопки)
+offColor :: IORef Bool -> Button() -> TextCtrl () -> IO() 
+offColor refFlag but label = do 
+  set but [bgcolor := white ] 
+  set label [ text := " " ] 
+  writeIORef refFlag True
+
+-----------------------------------------------------------
