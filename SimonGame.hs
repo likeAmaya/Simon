@@ -168,8 +168,8 @@ actionGUI buttons pairs f ref txtTitle constUsedColors = do
 nullUsersList :: [Button()] -> [(Button(), ColorInGame)] -> Window a -> IORef UsedColors -> IORef Int -> TextCtrl () -> IORef UsedColors -> TextCtrl() -> IO()
 nullUsersList buttons pairs f userList n textField st1 levelInfo = do
 	nn <- readIORef n
-	set levelInfo [ text := "Вы прошли уровень " ++ show (nn-1) ++ "!"]
-	let tempList = []
+	set levelInfo [ text := "Вы прошли уровень " ++ show (nn-1) ++ "!"] -- генерация сообщения о прохождении уровня
+	let tempList = [] -- для нового уровня
 	writeIORef userList tempList
-	actionGUI buttons pairs f n textField st1
+	actionGUI buttons pairs f n textField st1 -- запуск с новыми данными
 	return()
