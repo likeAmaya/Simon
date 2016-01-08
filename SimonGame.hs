@@ -70,6 +70,17 @@ offColor refFlag but label = do
 
 -----------------------------------------------------------
 
+-- Функция блокировки кнопок (делает кнопки недоступными для пользователя) 
+disableButs :: [Button ()] -> IO () 
+disableButs buttons = do -- номера кнопок от 0 до 3
+  set (getElemFromListWithId buttons 0) [enabled := False] 
+  set (getElemFromListWithId buttons 1) [enabled := False] 
+  set (getElemFromListWithId buttons 2) [enabled := False] 
+  set (getElemFromListWithId buttons 3) [enabled := False] 
+return() 
+
+-----------------------------------------------------------
+
 -- В случае проигрыша пользователя
 gameOver :: Window a -> IORef UsedColors -> IORef Int -> IORef UsedColors -> TextCtrl () -> TextCtrl() -> IO()
 
