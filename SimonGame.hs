@@ -137,3 +137,17 @@ if (fl == True) then setColor refFlag ourButton c label else offColor refFlag ou
 if (currUsedColors == []) then return() else (if fl == False then (writeIORef colors (tail currUsedColors)) else (writeIORef colors currUsedColors))
 
 -----------------------------------------------------------------
+
+-- Функция, которая показывает игроку сгенерированную последовательность поэлементно с задержкой по таймеру
+showColorsListWithDelay :: [Button ()] -> [(Button(), ColorInGame)] -> Window a -> IORef UsedColors -> TextCtrl () -> IO()
+showColorsListWithDelay buttons pairs f generatedList label = do
+    -- копируем generated list
+    stateGenList <- readIORef generatedList
+    generatedListCopy <- newIORef (stateGenList)
+    flag <- newIORef True
+    t <- timer f [interval := 1000, on command := showOneColor flag f buttons pairs generatedListCopy label]
+    set label [ text := ""]
+    return () 
+
+-----------------------------------------------------------------------------------
+
