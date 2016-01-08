@@ -84,22 +84,10 @@ colorToString color = show color
 
 -------------------------------------------------------------
 
--- Парсеры
-parseStr :: String -> [ColorInGame]
-parseStr str = parseList $ words str 
-
--------------------------------------------------------------
-
-parseList :: [String] -> [ColorInGame]
-parseList xs = map (\x -> prs x) xs
-	where 	
-		prs :: String -> ColorInGame
-		prs x 
-			| (x=="Red") = Red
-			| (x=="Blue") = Blue
-			| (x=="Yellow") = Yellow
-			| otherwise = Green 
-
---------------------------------------------------------------
-
-
+action n = do
+		state <- generateGameLevel n -- Генерируем уровень ( каждому уровню соответствует свое число загадываемых цветов, в результате будет получен писок цветов)
+		putStrLn $ stringLevel state -- преобразуем полученный список к строке, далее эти цвета будут отображены на форме с некоторым интервалом
+		str <- getLine 				 -- здесь получаем данные игрока
+		let userList = parseStr str  -- преобразуем к списку цветов
+		win userList state           -- сравниваем данные игрока и заданные игрой. определяем результат
+		if (compareUsedColors userList state) then action (n+1) else win userList state  -- либо переходим на следующий уровень, либо выводится сообщение о проигрыше
