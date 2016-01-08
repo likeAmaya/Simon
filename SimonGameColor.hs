@@ -1,10 +1,13 @@
 -- В этом файле будут реализованы базовые функции для работы с цветом
 
+module SimonGameColor where
+
 import System.Random
 import Data.List
 import System.IO
 import Control.Monad
 
+import Control.Monad.Trans
 -----------------------------------------------------------
 
 -- Цвета наших кнопок: желтый, красный, зеленый, синий

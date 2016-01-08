@@ -7,6 +7,7 @@ import SimonGameColor
 import System.IO
 import Control.Monad
 import Data.List
+import Control.Concurrent (threadDelay)
 
 -----------------------------------------------------------
 
@@ -196,3 +197,84 @@ actionUserButtons buttons pairs textField n w refUser st1 butColor levelInfo = d
     else return()
 
 -----------------------------------------------------------------
+
+-- Запуск всей игры
+main :: IO ()
+main = start $ gui
+
+-- Здесь собирается весь наш интерфейс
+gui :: IO ()
+gui =  do
+  -- Наша форма
+  f <- frame [ text := "Simon"]
+  let n = 1 -- начинаем с этого уровня
+  state <- generateGameLevel n -- генерируется список цветов, в зависимости от номера уровня
+  let level = stringLevel state
+  ref <- newIORef (n+1)
+
+   -- Это список, в который записивается сгенерированная программой последовательность для определенного игрового уровня
+  refState <- newIORef state
+
+  -- Это список, который накапливает значения на определенном уровне по нажатию цветных кнопок пользователя
+  let userList = []
+  refUserList <- newIORef userList
+ 
+  -- 
+  txtTitle <- entry f [text := level , enabled := False ]
+  congr <- entry f [text := "Уровень начат!" , enabled := False ]
+      
+    -- tsakButton, мигающие кнопочки
+  taskb1 <- button f [ text := " ", bgcolor  := white, clientSize := sz 200 200, enabled := False  ]
+  taskb2 <- button f [ text := " " , bgcolor  := white, clientSize := sz 200 200, enabled := False ]
+  taskb3 <- button f [ text := " " , bgcolor  := white, clientSize := sz 200 200, enabled := False ]
+  taskb4 <- button f [ text := " " , bgcolor  := white, clientSize := sz 200 200, enabled := False ]
+  
+  let listOfPairTaskButtons = (taskb1, Green ):(taskb2, Red):(taskb3, Yellow):(taskb4, Blue):[]
+  
+  p <- panel f [clientSize := sz 420 100] 
+  
+  -- gameButton, кнопочки на которые непосредственно нажимает игрок
+  b1 <- button f [ text := " ", bgcolor  := green, clientSize := sz 200 200 ]
+  b2 <- button f [ text := " " , bgcolor  := red , clientSize := sz 200 200 ]
+  b3 <- button f [ text := " " , bgcolor  := yellow , clientSize := sz 200 200 ]
+  b4 <- button f [ text := " " , bgcolor  := blue, clientSize := sz 200 200 ]
+
+  -- список, куда мы помещаем кнопки
+  let listUserButtons = b1:b2:b3:b4:[]
+  
+  -- Кнопки с помощью, выходом и восхвалением 
+  q <- button f [ text := "Выход из игры" , on command := close f ]
+  h <- button f [ text := "Правила игры" , on command := playerHelp f ]
+  a <- button f [ text := "Об игре", on command := aboutGame f ]
+
+  set b1 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f refUserList refState Green  congr ]
+  set b2 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f refUserList refState Red congr]
+  set b3 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f refUserList refState Yellow congr ]
+  set b4 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f refUserList refState Blue  congr ]
+ 
+  set f [ layout := column 0 [
+        -- Тестовое окно с текущим цветом игры
+        margin 1 $ row 1 [ hfill $ minsize (sz 200 25) $ widget txtTitle],
+    
+    	-- Переход уровня
+        margin 1 $ row 1 [ hfill $ minsize (sz 150 25) $  widget congr],
+    
+        -- Кнопки с заданием
+      	-- Первый ряд
+        hfloatCentre $ margin 5 $ row 5 [row 5 [ widget taskb1, widget taskb2]], 
+        -- Второй ряд
+      	hfloatCentre $ margin 5 $ row 5 [ row 5 [ widget taskb3, widget taskb4]],
+
+	hfloatCentre $ margin 5 $ row 5 [ row 5 [ widget p ]],
+  
+        -- Кнопки игрока
+	-- Первый ряд
+        hfloatCentre $ margin 5 $ row 5 [ row 5 [ widget b1, widget b2]], 
+      	-- Второй ряд
+	hfloatCentre $margin 5 $ row 5 [row 5 [ widget b3, widget b4]],
+ 
+        hfloatCentre $  margin 1 $ row 1 [ widget q, widget h, widget a ]]
+   ] 
+
+  return() 
+
