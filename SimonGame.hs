@@ -207,7 +207,7 @@ main = start $ startGame
 startGame :: IO ()
 startGame =  do
   -- Наша форма
-  f <- frame [ text := "Simon"]--, picture := "/home/oleg/Simon/fon.jpeg"]
+  f <- frameFixed [ text := "Simon", bgcolor := white, clientSize := sz 200 10] -- picture := "/home/oleg/Simon/fon.jpeg"]
   let n = 1 -- начинаем с этого уровня
   state <- generateGameLevel n -- генерируется список цветов, в зависимости от номера уровня
   let level = stringLevel state
@@ -221,31 +221,29 @@ startGame =  do
   gameUserList <- newIORef userList
  
   -- 
-  txtTitle <- entry f [text := level , enabled := False ]
-  congr <- entry f [text := "Уровень начат!" , enabled := False ] 
+  txtTitle <- entry f [text := level , bgcolor := cyan, enabled := False ]
+  congr <- entry f [text := "Level begun!", bgcolor := green, enabled := False ] 
 
-  taskb1 <- button f [ text := " ", bgcolor  := white, clientSize := sz 200 200, enabled := False  ]
-  taskb2 <- button f [ text := " " , bgcolor  := white, clientSize := sz 200 200, enabled := False ]
-  taskb3 <- button f [ text := " " , bgcolor  := white, clientSize := sz 200 200, enabled := False ]
-  taskb4 <- button f [ text := " " , bgcolor  := white, clientSize := sz 200 200, enabled := False ]
+  taskb1 <- button f [ text := " ", bgcolor  := white, clientSize := sz 100 100, enabled := False  ]
+  taskb2 <- button f [ text := " " , bgcolor  := white, clientSize := sz 100 100, enabled := False ]
+  taskb3 <- button f [ text := " " , bgcolor  := white, clientSize := sz 100 100, enabled := False ]
+  taskb4 <- button f [ text := " " , bgcolor  := white, clientSize := sz 100 100, enabled := False ]
   
   let listOfPairTaskButtons = (taskb1, Green ):(taskb2, Red):(taskb3, Yellow):(taskb4, Blue):[]
   
-  p <- panel f [clientSize := sz 420 200] 
-  
   -- gameButton, кнопочки на которые непосредственно нажимает игрок
-  b1 <- button f [ text := " ", bgcolor  := green, clientSize := sz 200 200 ]
-  b2 <- button f [ text := " " , bgcolor  := red , clientSize := sz 200 200 ]
-  b3 <- button f [ text := " " , bgcolor  := yellow , clientSize := sz 200 200 ]
-  b4 <- button f [ text := " " , bgcolor  := blue, clientSize := sz 200 200 ]
+  b1 <- button f [ text := " ", bgcolor  := green, clientSize := sz 100 100 ]
+  b2 <- button f [ text := " " , bgcolor  := red , clientSize := sz 100 100 ]
+  b3 <- button f [ text := " " , bgcolor  := yellow , clientSize := sz 100 100 ]
+  b4 <- button f [ text := " " , bgcolor  := blue, clientSize := sz 100 100 ]
 
   -- список, куда мы помещаем кнопки
   let listUserButtons = b1:b2:b3:b4:[]
   
   -- Кнопки с помощью, выходом и информацией об игре 
-  q <- button f [ text := "Выход из игры" , on command := close f ]
-  h <- button f [ text := "Правила игры" , on command := playerHelp f ]
-  a <- button f [ text := "Об игре", on command := aboutGame f ]
+  q <- button f [ text := "Выход из игры", bgcolor  := red, on command := close f ]
+  h <- button f [ text := "Правила игры", bgcolor  := green, on command := playerHelp f ]
+  a <- button f [ text := "Об игре", bgcolor := blue, on command := aboutGame f ]
 
   set b1 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f gameUserList gameState Green  congr ]
   set b2 [ on command := actionUserButtons listUserButtons listOfPairTaskButtons txtTitle ref f gameUserList gameState Red congr]
@@ -259,22 +257,12 @@ startGame =  do
     	-- Переход уровня
         margin 1 $ row 1 [ hfill $ minsize (sz 200 25) $  widget congr],
     
-        -- Кнопки с заданием
+        -- Кнопки 
       	-- Первый ряд
-        hfloatCentre $ margin 5 $ row 5 [row 5 [ widget taskb1, widget taskb2]], 
-        -- Второй ряд
-      	hfloatCentre $ margin 5 $ row 5 [ row 5 [ widget taskb3, widget taskb4]],
-
-	hfloatCentre $ margin 5 $ row 5 [ row 5 [ widget p ]],
-  
-        -- Кнопки игрока
-	-- Первый ряд
-        hfloatCentre $ margin 5 $ row 5 [ row 5 [ widget b1, widget b2]], 
-      	-- Второй ряд
-	hfloatCentre $margin 5 $ row 5 [row 5 [ widget b3, widget b4]],
- 
-        hfloatCentre $  margin 1 $ row 1 [ widget q, widget h, widget a ]]
+        hfloatCenter $ margin 30 $ column 10 [ row 10 [ widget taskb1, widget taskb2, widget b1, widget b2]], 
+        -- Второй ряд       
+	hfloatCenter $ margin 30 $ column 10 [ row 10 [ widget taskb3, widget taskb4, widget b3, widget b4]], 
+        hfloatCenter $  margin 80 $ column 80 [ row 10 [ widget q, widget h, widget a ]]]
    ] 
 
   return() 
-
